@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"todo"
+	"todo/pkg/handler"
+)
 
 func main() {
-	fmt.Println("Init app")
+	handlers := new(handler.Handler)
+	srv := new(todo.Server)
+	if err := srv.Run("8000", handlers.InitRoutes()); err != nil {
+		log.Fatalf("Возникла ошибка запуска https сервера: %s", err.Error())
+	}
 }
