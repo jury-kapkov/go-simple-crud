@@ -2,10 +2,12 @@ package service
 
 import (
 	"crypto/sha1"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 	"todo"
+	"todo/pkg/messages"
 	"todo/pkg/repository"
 )
 
@@ -21,6 +23,27 @@ type AuthService struct {
 type tokenClaims struct {
 	jwt.StandardClaims
 	UserId int `json:"user_id"`
+}
+
+func (s *AuthService) ParseToken(accessToken string) (int, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New(messages.InvalidSigningMethod)
+		}
+
+		return []byte(singingKey), nil
+	})
+
+	if err != nil {
+		return 0, err
+	}
+
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return 0, errors.New(messages.UnknownTokenClaims)
+	}
+
+	return claims.UserId, nil
 }
 
 func (s *AuthService) GenerateToken(username string, password string) (string, error) {
