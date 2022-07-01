@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"todo"
 	"todo/pkg/handler"
@@ -13,12 +13,14 @@ import (
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	if err := initConfig(); err != nil {
-		log.Fatalf("Ошибка считывания конфигов: %s", err.Error())
+		logrus.Fatalf("Ошибка считывания конфигов: %s", err.Error())
 	}
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Ошибка считывания env файла: %s", err.Error())
+		logrus.Fatalf("Ошибка считывания env файла: %s", err.Error())
 	}
 
 	db, err := repository.NewPostgresDB(repository.Config{
@@ -31,7 +33,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Fatalf("Не удалось подключиться к БД: %s", err.Error())
+		logrus.Fatalf("Не удалось подключиться к БД: %s", err.Error())
 	}
 
 	repos := repository.NewRepository(db)
@@ -40,7 +42,7 @@ func main() {
 
 	srv := new(todo.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		log.Fatalf("Возникла ошибка запуска https сервера: %s", err.Error())
+		logrus.Fatalf("Возникла ошибка запуска https сервера: %s", err.Error())
 	}
 }
 
