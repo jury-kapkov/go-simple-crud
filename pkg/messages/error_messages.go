@@ -13,4 +13,5 @@ const (
 
 	InvalidSigningMethod = "невалидный метод подписи"
 	UnknownTokenClaims   = "тип token claims должны быть типа *tokenClaims"
+	InvalidTypeOfUserId  = "невалидный тип айди пользователя"
 )

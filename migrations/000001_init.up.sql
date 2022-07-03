@@ -1,6 +1,6 @@
 CREATE TABLE users
 (
-    id            serial       not null unique,
+    id            serial       not null primary key,
     name          varchar(255) not null,
     username      varchar(255) not null,
     password_hash varchar(255) not null
@@ -8,7 +8,7 @@ CREATE TABLE users
 
 CREATE TABLE todo_lists
 (
-    id          serial       not null unique,
+    id          serial       not null primary key,
     title       varchar(255) not null,
     description varchar(255)
 );
@@ -22,7 +22,7 @@ CREATE TABLE users_lists
 
 CREATE TABLE todo_items
 (
-    id          serial       not null unique,
+    id          serial       not null primary key,
     title       varchar(255) not null,
     description varchar(255),
     done        boolean      not null default false
